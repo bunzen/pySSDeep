@@ -28,7 +28,7 @@
 #include <fuzzy.h>
 #include <Python.h>
 
-static Pyobject *
+static PyObject *
 ssdeep_fuzzy_hash_buf(PyObject *self, PyObject *args) {
 
   char *result; /* ssdeep hash */
@@ -40,7 +40,7 @@ ssdeep_fuzzy_hash_buf(PyObject *self, PyObject *args) {
    * hashed by ssdeep.
    */
   if (!PyArg_ParseTuple(args, "s#", &buff, &buffsize)) {
-    PyErr_SetObject(PyExc_ValueError, "Unable to parse string buffer from argument list");
+    PyErr_SetObject(PyExc_ValueError, Py_BuildValue("s", "Unable to parse string buffer from argument list"));
     return NULL;
   }
 
@@ -51,7 +51,7 @@ ssdeep_fuzzy_hash_buf(PyObject *self, PyObject *args) {
 
   /* compute the ssdeep hash from buffer */
   if (fuzzy_hash_buf(buff, buffsize, result) != 0) {
-    PyErr_SetObject(PyExc_ValueError, ("Unable to compute hash"));
+    PyErr_SetObject(PyExc_ValueError, Py_BuildValue("s", "Unable to compute hash"));
     free(result);
     return NULL;
   }
@@ -64,14 +64,65 @@ ssdeep_fuzzy_hash_buf(PyObject *self, PyObject *args) {
 }
 
 
+static PyObject *
+ssdeep_fuzzy_hash_filename(PyObject *self, PyObject *args) {
+
+  char *result; /* ssdeep hash*/
+  char *filename; /* function argument */
+  PyObject *return_value; /* create a python object before return to allow for free */
+
+  /* parse out the function argument containting the buffer that should be                                           
+   * hashed by ssdeep.                                                                                               
+   */
+  if (!PyArg_ParseTuple(args, "s", &filename)) {
+    PyErr_SetObject(PyExc_ValueError, Py_BuildValue("s", "Unable to parse filename from argument list"));
+    return NULL;
+  }
+
+  if ((result = malloc(FUZZY_MAX_RESULT)) == NULL) {
+    PyErr_NoMemory();
+    return NULL;
+  }
+
+  /* compute the ssdeep hash from buffer */
+  if (fuzzy_hash_filename(filename, result) != 0) {
+    PyErr_SetObject(PyExc_ValueError, Py_BuildValue("s", "Unable to compute hash"));
+    free(result);
+    return NULL;
+  }
+
+  /* build a python string and free up result buffer. */
+  return_value =  Py_BuildValue("s", result);
+  free(result);
+
+  return return_value;
+
+}
+
+static PyObject *
+ssdeep_fuzzy_compare(PyObject *self, PyObject *args) {
+  int distance; /* difference between hash signature one and two (return value)*/
+  char *sig1, *sig2; /* local storage for the two hash signatures */
+  
+  if (!PyArg_ParseTuple(args, "ss", &sig1, &sig2)) {
+    PyErr_SetObject(PyExc_ValueError, Py_BuildValue("s", "Unable to parse two string signatures from argument list"));
+    return NULL;
+  }
+
+  distance = fuzzy_compare(sig1, sig2);
+  return Py_BuildValue("i", distance);
+}
+
 static PyMethodDef FuzzyMethods[] = {
   {"fuzzy_hash_buf", ssdeep_fuzzy_hash_buf, METH_VARARGS, "Hash a string buffer"},
+  {"fuzzy_hash_filename", ssdeep_fuzzy_hash_filename, METH_VARARGS, "Hash a file given the filename"},
+  {"fuzzy_compare", ssdeep_fuzzy_compare, METH_VARARGS, "Compare two hash signatures"},
   {NULL, NULL, 0, NULL} /* sentinel */
 };
 
 
 PyMODINIT_FUNC
-initssdeep(void) {
-  (void) Py_InitModule("ssdeep", FuzzyMethods);
+initpyssdeep(void) {
+  (void) Py_InitModule("pyssdeep", FuzzyMethods);
 }
 
