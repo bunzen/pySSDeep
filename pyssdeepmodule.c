@@ -32,7 +32,7 @@ static PyObject *
 ssdeep_fuzzy_hash_buf(PyObject *self, PyObject *args) {
 
   char *result; /* ssdeep hash */
-  char *buff; /* function argument */
+  unsigned char *buff; /* function argument */
   int buffsize; /* length of function argument (may contain \0) */
   PyObject *return_value; /* create a python object before return to allow for free */
 
