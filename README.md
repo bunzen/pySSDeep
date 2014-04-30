@@ -12,9 +12,10 @@ Installation
 ============
 
 Download or clone the source
-
+```
 $ python setup.py build
 $ sudo python setup.py install
+```
 
 Example
 =======
