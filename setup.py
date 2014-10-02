@@ -1,4 +1,4 @@
-from distutil.core import setup, Extension
+from distutils.core import setup, Extension
 
 module1 = Extension('pyssdeep',
                     define_macros = [('MAJOR_VERSION', '0'),
@@ -17,4 +17,5 @@ setup (name = 'pySSDeep',
        long_description = '''
 Wrapper module around the ssdeep library/tool.
 http://ssdeep.sourceforge.net/'
-'''
+''',
+       ext_modules = [module1])
