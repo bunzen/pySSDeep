@@ -119,11 +119,28 @@ static PyMethodDef FuzzyMethods[] = {
   {"fuzzy_hash_filename", ssdeep_fuzzy_hash_filename, METH_VARARGS, "Hash a file given the filename"},
   {"fuzzy_compare", ssdeep_fuzzy_compare, METH_VARARGS, "Compare two hash signatures"},
   {NULL, NULL, 0, NULL} /* sentinel */
+}
+
+#if PY_MAJOR_VERSION >= 3
+
+static struct PyModuleDef pyssdeep =
+{
+    PyModuleDef_HEAD_INIT,
+    "pyssdeep", /* name of module */
+    "",          /* module documentation, may be NULL */
+    -1,          /* size of per-interpreter state of the module, or -1 if the module keeps state in global variables. */
+    FuzzyMethods
 };
 
+PyMODINIT_FUNC PyInit_pyssdeep(void)
+{
+    return PyModule_Create(&pyssdeep);
+}
 
-PyMODINIT_FUNC
-initpyssdeep(void) {
+#else
+
+PyMODINIT_FUNC initpyssdeep(void) {
   (void) Py_InitModule("pyssdeep", FuzzyMethods);
 }
 
+#endif
