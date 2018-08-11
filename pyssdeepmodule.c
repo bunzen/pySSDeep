@@ -119,7 +119,7 @@ static PyMethodDef FuzzyMethods[] = {
   {"fuzzy_hash_filename", ssdeep_fuzzy_hash_filename, METH_VARARGS, "Hash a file given the filename"},
   {"fuzzy_compare", ssdeep_fuzzy_compare, METH_VARARGS, "Compare two hash signatures"},
   {NULL, NULL, 0, NULL} /* sentinel */
-}
+};
 
 #if PY_MAJOR_VERSION >= 3
 
