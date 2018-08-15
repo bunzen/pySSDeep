@@ -123,23 +123,24 @@ static PyMethodDef FuzzyMethods[] = {
 
 #if PY_MAJOR_VERSION >= 3
 
-static struct PyModuleDef pyssdeep =
-{
+static struct PyModuleDef pyssdeep = {
     PyModuleDef_HEAD_INIT,
-    "pyssdeep", /* name of module */
+    "pyssdeep",  /* name of module */
     "",          /* module documentation, may be NULL */
     -1,          /* size of per-interpreter state of the module, or -1 if the module keeps state in global variables. */
     FuzzyMethods
 };
 
-PyMODINIT_FUNC PyInit_pyssdeep(void)
+PyMODINIT_FUNC
+PyInit_pyssdeep(void)
 {
     return PyModule_Create(&pyssdeep);
 }
 
 #else
 
-PyMODINIT_FUNC initpyssdeep(void) {
+PyMODINIT_FUNC
+initpyssdeep(void) {
   (void) Py_InitModule("pyssdeep", FuzzyMethods);
 }
 
