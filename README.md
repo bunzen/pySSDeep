@@ -1,5 +1,5 @@
 pySSDeep
-========
+=========
 
 Python SSDeep  wrapper
 
